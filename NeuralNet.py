@@ -2,7 +2,6 @@ import numpy as np
 import scipy.io as so
 import scipy.optimize as opt
 
-##### Function Definitions #################################################################
 def costFunction(nn_params, *args):
     input_layer_size, hidden_layer_size, num_labels, X, Y, lambd = args[0], args[1], args[2], args[3], args[4], args[5]
     length1 = (input_layer_size+1)*(hidden_layer_size)
@@ -17,19 +16,6 @@ def costFunction(nn_params, *args):
     Theta1_grad = np.zeros(T1.shape)
     Theta2_grad = np.zeros(T2.shape)
 
-
-####################### YOUR CODE HERE!!!! ###################################################
-    '''
-    Instructions (15pts): implement forward and backward propogation, set J, Theta1_grad and
-    Theta2_grad to the cost, first matrix of thetas and second matrix of thetas. You don't need
-    to use regularization, though there will be a 3 point b0nus if you do.
-
-    For the y values, convert them to arrays, with a '1' in the zero index corresponding to a digit
-    value of 1 and a '1' in 9th index corresponding to a digit value of 10, with zeros in all
-    other indices.
-
-    Note: you need to do an outer product when generating the capital Delta matrices in the PDF
-    '''
     Theta1_grad = T1
     Theta2_grad = T2
     X = np.c_[np.ones(m), X] #pad with 1 for theta1
@@ -55,7 +41,6 @@ def costFunction(nn_params, *args):
     Theta2_grad = d2.T.dot(a1)
     Theta1_grad /= m
     Theta2_grad /= m
-###############################################################################################
     # unroll gradients and concatenate
     grad = np.concatenate([Theta1_grad.flatten(), Theta2_grad.flatten()])
     # return variables
@@ -84,9 +69,7 @@ def gradApprox(nn_params, input_layer_size, hidden_layer_size, num_labels, X, Y,
 
 def sigmoid(h):
     sigmoid = 0
-###################### YOUR CODE HERE!!!! #####################################################
     sigmoid = 1.0/(1.0 + np.e ** (-h))
-##############################################################################################
     return sigmoid
 
 
@@ -94,10 +77,8 @@ def sigmoid(h):
 
 def sigmoidGradient(z):
     sigmoidGrad = 0
-###################### YOUR CODE HERE!!!! #####################################################
     g = sigmoid(z)
     sigmoidGrad = g*(1-g)
-###############################################################################################
     return sigmoidGrad
 
 
@@ -105,8 +86,6 @@ def forwardPropAndAccuracy(nn_params, input_layer_size, hidden_layer_size, num_l
 
     predictions = 0
     percentCorrect = 0
-####################### YOUR CODE HERE !!!! ###################################################
-#Extra Credit: 5 points
     length1 = (input_layer_size+1)*(hidden_layer_size)
 
     nn1 = nn_params[:length1]
@@ -145,15 +124,12 @@ def forwardPropAndAccuracy(nn_params, input_layer_size, hidden_layer_size, num_l
     percentCorrect = np.sum(result)/m
 
     predictions = H
-###############################################################################################
 
    #make sure you return these correctly
     return predictions, percentCorrect
 
 
 def randomInitializeWeights(weights, factor):
-##### This is implemented for you. Think: Why do we do this? #################################
-
     W = np.random.random(weights.shape)
     #normalize so that it spans a range of twice epsilon
     W = W * 2 * factor # applied element wise
@@ -163,7 +139,6 @@ def randomInitializeWeights(weights, factor):
 
     return W
 
-###############################################################################################
 # helper methods
 def getCost(nn_params, *args):
     input_layer_size, hidden_layer_size, num_labels, X, Y, lambd = args[0], args[1], args[2], args[3], args[4], args[5]
@@ -176,14 +151,7 @@ def getGrad(nn_params, *args):
     input_layer_size, hidden_layer_size, num_labels, X, Y, lambd = args[0], args[1], args[2], args[3], args[4], args[5]
     return costFunction(nn_params, input_layer_size, hidden_layer_size, num_labels, X, Y, lambd )[1]
 
-###############################################################################################
-
-
-
-###############################################################################################
-##### Start Program! ##########################################################################
-###############################################################################################
-
+# Start Program! #
 
 print("Loading Saved Neural Network Parameters...")
 
@@ -230,5 +198,4 @@ args = (input_layer_size, hidden_layer_size, num_labels, X, Y, lambd)
 
 result = opt.fmin_cg(getCost, nn_params, fprime=getGrad, args = args, maxiter = 400)
 
-#extra credit
 print("Accuracy: ", forwardPropAndAccuracy(result, input_layer_size, hidden_layer_size, num_labels, X, Y)[1])
